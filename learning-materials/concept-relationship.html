@@ -53,6 +53,17 @@
   .badge { display: inline-block; font-family: "PingFang SC", sans-serif; font-size: 11.5px;
     padding: 2px 10px; border-radius: 999px; vertical-align: 2px; }
   .badge.draft { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+  .quiz-item { margin: 18px 0; padding: 14px 18px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px; }
+  .quiz-item .q { font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-weight: 600; margin: 0 0 8px; line-height: 1.6; }
+  .opts { list-style-type: upper-alpha; margin: 4px 0 12px; padding-left: 30px; }
+  .opts li { margin-bottom: 4px; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .diff { display: inline-block; font-size: 11px; font-family: "PingFang SC", sans-serif;
+    padding: 1px 8px; border-radius: 999px; margin-right: 8px; vertical-align: 2px; }
+  .diff.d1 { background: #dcfce7; color: #166534; }
+  .diff.d2 { background: #dbeafe; color: #1e40af; }
+  .diff.d3 { background: #fce7f3; color: #9d174d; }
   footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted); }
 </style>
@@ -159,6 +170,151 @@
   <blockquote>
     <p>我的个人判断：这三个概念里最容易被低估的是<strong>上下文管理</strong>。大家追逐 Agent 的自主性、比拼 Skill 的数量，但日常体验的好坏往往取决于"此刻窗口里放了什么"。同样地，Agent 的能力上限并不等于模型智力，而在于三者的工程组合——这也是为什么"从最简单的方案开始"（Anthropic 的工程建议）比"堆砌复杂框架"更接近用好 AI 的正确路径。</p>
   </blockquote>
+</section>
+
+<section>
+  <h2><span class="no">06</span>综合自测（10 道选择题）</h2>
+  <p>本页题目不考单个概念的背诵，而考<em>三个概念之间的关系</em>：上下文如何约束 Agent、Skill 如何化解这种约束、以及三者如何构成一个闭环。难度按"基础 → 进阶 → 挑战"分三层（3 / 4 / 3）。先自己作答，再展开核对。</p>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>1. 下列三组"概念 → 定位"的对应，全部正确的是？</p>
+  <ol class="opts">
+    <li>Agent = 聊天界面；上下文 = 联网功能；Skill = 快捷指令</li>
+    <li>Agent = 模型参数；上下文 = 训练数据；Skill = 数据集</li>
+    <li>Agent = 自主执行的大脑；上下文 = 运行时的工作现场；Skill = 沉淀下来的可复用任务知识</li>
+    <li>Agent = 提示词；上下文 = 输出长度；Skill = 插件商店</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>三者不是并列的三个功能，而是同一系统里的三种角色：<em>Agent 负责执行，上下文是执行的现场，Skill 让执行越做越专</em>。（章节 01）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>2. 一个 Skill 尚未被触发时，它占据上下文的是哪一部分？</p>
+  <ol class="opts">
+    <li>只有 name 与 description 这两行元数据</li>
+    <li>完全不占任何上下文，也完全不为人知</li>
+    <li>SKILL.md 全文</li>
+    <li>它捆绑的所有脚本与资源文件</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：A。</strong>这就是"渐进式披露"：平时只花极小上下文让模型知道"有这个技能及其适用场景"，判断相关后才加载正文，资源更晚才读。B 错在"完全不为人知"——没有那两行元数据，模型根本无从判断该不该用它。（章节 04）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>3. 上下文窗口的容量用什么计量？</p>
+  <ol class="opts">
+    <li>字节数</li>
+    <li>句子数</li>
+    <li>字符数</li>
+    <li>token 数（模型处理文本的基本单位）</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：D。</strong>上下文是"模型单次推理能看见的全部输入"，容量按 token 计；这也是为什么它被称为模型有限的"工作记忆"。（章节 01）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>4. 真实 Agent 系统普遍采用"按需读取"（搜索定位、只读相关文件）而非把资料全塞进上下文，主要原因是？</p>
+  <ol class="opts">
+    <li>读取文件的 API 比网络请求便宜</li>
+    <li>窗口容量有限，且注意力计算成本随长度增长，无关信息还会稀释有效信号</li>
+    <li>模型无法一次处理多个文件</li>
+    <li>这样做可以让模型跳过推理直接输出</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：B。</strong>有限性与成本是硬约束：窗口装不下所有信息，塞得越满越贵越慢，中间还容易"迷失"。本作业核实来源时按需抓取网页而非全文塞入，正是这一策略。（章节 03）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>5. "迷失在中间（Lost in the Middle）"这一发现，对 Agent 的工程实践最直接的可操作启示是？</p>
+  <ol class="opts">
+    <li>只要上下文足够长，位置效应就会自动消失</li>
+    <li>尽量缩短用户的问题长度</li>
+    <li>把关键指令放在上下文的开头或结尾，而不是埋在长文档中段</li>
+    <li>把所有信息都改写成表格</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>模型对开头与结尾的信息利用最好，所以关键约束通常放在系统提示（最前）。A 是常见误解：加长窗口并不能消除位置效应。（章节 03）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>6. Skill 与"一段写得很好的一次性提示词"相比，最本质的区别是？</p>
+  <ol class="opts">
+    <li>Skill 使用了特殊语法</li>
+    <li>Skill 被持久化成磁盘上的文件资产，可版本管理、可迭代、可跨会话复用</li>
+    <li>Skill 只能由官方发布</li>
+    <li>Skill 更长</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：B。</strong>只存在于对话历史里的做法，会话结束就消失；写成 SKILL.md 落在磁盘上，就变成能被 git 管理、能被 review、能持续迭代的资产——本仓库本身就在演示这一点。（章节 04）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>7. 把 Skill 放在仓库的 <code>.workbuddy/skills/</code> 目录（项目级）而非个人全局目录，其意义在于？</p>
+  <ol class="opts">
+    <li>项目级 Skill 的执行速度更快</li>
+    <li>放在这里可以避免占用上下文</li>
+    <li>只有项目级目录能被 Git 追踪</li>
+    <li>知识随仓库流动——每个打开该仓库的人都会自动获得这套约定，且可像代码一样被评审</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：D。</strong>项目级 Skill 让团队约定从"口头传递"变成"随仓库分发"。C 错在因果关系——能否被追踪取决于是否提交进仓库，与目录层级无关。（章节 04）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>8. 一个 Agent 已经加载了高质量的 Skill，但某次任务依然表现糟糕。从三者关系看，最可能的原因是？</p>
+  <ol class="opts">
+    <li>Skill 决定"能力的上限"，而此刻上下文里装了什么才决定"这次的实际表现"——关键输入没进窗口，能力就无从发挥</li>
+    <li>模型参数量不足</li>
+    <li>Skill 与 Agent 不兼容，必须更换模型</li>
+    <li>该 Skill 本身写得不好</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：A。</strong>这是我想强调的核心判断：<em>Skill 是可持久化的能力，上下文是能力得以兑现的现场</em>。D 是干扰项——若 Skill 已被验证有效，则应优先排查"此刻窗口里放了什么"，而不是急着改 Skill。（章节 03、04）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>9. 关于三者关系，下列判断最准确的是？</p>
+  <ol class="opts">
+    <li>Agent 的自主性越强，对上下文和 Skill 的依赖就越弱</li>
+    <li>Skill 是核心，上下文和 Agent 都是它的附属实现</li>
+    <li>上下文的稀缺性是对 Agent 的第一约束，而 Skill 是为化解这种约束而生的工程答案之一</li>
+    <li>只要上下文窗口足够大，Skill 就完全没有必要存在</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>D 很具迷惑性：窗口再大也无法解决"知识跨会话持久""随仓库共享""成本随长度增长"三个问题，Skill 的价值不因窗口变大而消失。A 相反——自主性越强、循环越多轮，对上下文管理与 Skill 规范的依赖反而越强。（章节 03、04）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>10. 在"本次作业"这个闭环实例中，最后一个环节"沉淀"具体指的是？</p>
+  <ol class="opts">
+    <li>把三份 HTML 学习资料上传到 GitHub</li>
+    <li>把"九部分结构 + 来源逐条核实 + 自检清单"这套被验证有效的流程写成 SKILL.md，供下一个概念直接复用</li>
+    <li>把对话记录保存成截图</li>
+    <li>把模型生成的答案背下来</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：B。</strong>"沉淀"指把一次成功的做法从易失的对话历史搬进持久的文件资产——这正是 <em>Agent → Skill</em> 那条回环弧线的含义：教一次，永远会。（章节 05 的关系图与闭环说明）</p>
+  </details>
+</div>
 </section>
 
 <footer>

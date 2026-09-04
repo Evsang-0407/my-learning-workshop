@@ -65,6 +65,17 @@
     padding: 2px 10px; border-radius: 999px; vertical-align: 2px; }
   .badge.draft { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
   .badge.checked { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  .quiz-item { margin: 18px 0; padding: 14px 18px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px; }
+  .quiz-item .q { font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-weight: 600; margin: 0 0 8px; line-height: 1.6; }
+  .opts { list-style-type: upper-alpha; margin: 4px 0 12px; padding-left: 30px; }
+  .opts li { margin-bottom: 4px; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .diff { display: inline-block; font-size: 11px; font-family: "PingFang SC", sans-serif;
+    padding: 1px 8px; border-radius: 999px; margin-right: 8px; vertical-align: 2px; }
+  .diff.d1 { background: #dcfce7; color: #166534; }
+  .diff.d2 { background: #dbeafe; color: #1e40af; }
+  .diff.d3 { background: #fce7f3; color: #9d174d; }
   footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted); }
   @media print { body { padding: 0; } details { page-break-inside: avoid; } }
@@ -192,27 +203,147 @@
 
 <section>
   <h2><span class="no">PART 8</span>自测问题</h2>
-  <p>先自己作答，再展开核对。答不上来就回到对应章节重读。</p>
+  <p>共 10 题，按"基础 → 进阶 → 挑战"三级难度分层，覆盖解释、机制、场景、边界四个维度。先自己作答，再展开核对；答不上来就回到对应章节重读。</p>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>1. 在本仓库的 Skill 目录中，唯一必需的文件是？</p>
+  <ol class="opts">
+    <li>SKILL.md</li>
+    <li>manifest.json</li>
+    <li>scripts/main.py</li>
+    <li>assets/logo.png</li>
+  </ol>
   <details>
-    <summary>Q1：Skill 解决的核心问题是什么？</summary>
-    <p>把"怎么做某类任务"的程序性知识从一次性对话中沉淀出来，变成可发现、可复用、可共享的能力单元——"教一次、永远会"。（PART 3）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：A。</strong>scripts/、references/、assets/ 都是可选的捆绑资源，SKILL.md（含 YAML 元数据 + 指令正文）才是 Skill 的本体。（PART 4 结构表）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>2. SKILL.md 的 YAML 元数据中，模型主要依据哪个字段判断"何时触发这个 Skill"？</p>
+  <ol class="opts">
+    <li>author</li>
+    <li>name</li>
+    <li>description</li>
+    <li>version</li>
+  </ol>
   <details>
-    <summary>Q2：渐进式披露分几级？为什么说它是对上下文稀缺的回应？</summary>
-    <p>三级：name+description 常驻 → 相关时加载 SKILL.md 正文 → 捆绑资源按需加载/执行。不相关的知识不占上下文窗口，相关的按需展开，节省稀缺的窗口空间。（PART 4）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>description 描述适用场景，写得含糊就会漏触发或误触发——元数据质量决定 Skill 的可用性。（PART 4、PART 7）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>3. 项目级 Skill 在本仓库中的存放位置是？</p>
+  <ol class="opts">
+    <li>~/.workbuddy/skills/（用户主目录）</li>
+    <li>仓库内的 .workbuddy/skills/ 目录</li>
+    <li>仓库的 .git/ 目录下</li>
+    <li>桌面任意文件夹</li>
+  </ol>
   <details>
-    <summary>Q3：项目级 Skill 和用户级 Skill 分别放在哪？作用范围有何不同？</summary>
-    <p>用户级在 ~/.workbuddy/skills/（跨所有项目跟随个人）；项目级在仓库 .workbuddy/skills/（随仓库共享给所有打开它的人）。（PART 4）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：B。</strong>项目级随仓库走，对每个打开该仓库的人生效；A 是用户级，作用范围是个人跨所有项目。（PART 4 作用域表）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>4. 按渐进式披露机制，SKILL.md 的正文何时进入模型的上下文？</p>
+  <ol class="opts">
+    <li>永远不会进入上下文，只存在磁盘上</li>
+    <li>仅当用户手动把正文复制粘贴进对话时</li>
+    <li>每次会话开始时，所有 Skill 的正文全部加载</li>
+    <li>仅当模型根据元数据判断该 Skill 与当前任务相关时才加载</li>
+  </ol>
   <details>
-    <summary>Q4：SKILL.md 的 YAML 元数据里哪一项决定了模型能否正确触发它？</summary>
-    <p>description——模型根据描述判断当前任务是否与该 Skill 相关；写得含糊就会漏触发或误触发。（PART 4、PART 7）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：D。</strong>第一级只加载 name + description"目录卡片"，第二级才在相关时加载正文，第三级按需加载捆绑资源。（PART 4 渐进式披露三级）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>5. scripts/、references/、assets/ 三个目录的共同特点是？</p>
+  <ol class="opts">
+    <li>都是可选的捆绑资源，在真正需要时才加载或执行</li>
+    <li>必须存放在云端服务器</li>
+    <li>只能存放图片和字体</li>
+    <li>三者都是必需的</li>
+  </ol>
   <details>
-    <summary>Q5：什么样的任务不值得做成 Skill？</summary>
-    <p>一次性任务（直接对话即可）、包含敏感信息的内容（会随仓库公开）、频繁变化的纯事实数据（应外置为数据源）。（PART 7）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：A。</strong>脚本可直接执行而不必载入上下文，参考资料按需读入，模板资源用于产出——可选且分层加载。（PART 4 结构表）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>6. Skill 与普通提示词模板的关键区别是？</p>
+  <ol class="opts">
+    <li>两者没有区别，只是文件扩展名不同</li>
+    <li>Skill 只能用于聊天场景</li>
+    <li>Skill 可被模型按元数据自主发现、分级加载，还能捆绑脚本与资源</li>
+    <li>提示词模板不能包含中文</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>模板是被动的文本替换；Skill 是可被发现、可携带执行资产的能力单元。（PART 6 辨析表）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>7. 用户级 Skill 与项目级 Skill 的作用范围分别是？</p>
+  <ol class="opts">
+    <li>两者作用范围相同</li>
+    <li>用户级跟随个人账号跨所有项目；项目级随仓库对打开它的人生效</li>
+    <li>项目级覆盖整个公司</li>
+    <li>用户级仅限单次对话有效</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：B。</strong>用户级在 ~/.workbuddy/skills/，项目级在仓库 .workbuddy/skills/——后者让团队约定可以像代码一样被提交与审查。（PART 4、PART 5）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>8. 为什么说渐进式披露是"对上下文稀缺的直接回应"？</p>
+  <ol class="opts">
+    <li>它从物理上压缩了 token 的长度</li>
+    <li>它提高了 GPU 的利用率</li>
+    <li>它把知识永久写入了模型权重</li>
+    <li>不相关的知识不占窗口空间，相关的知识按需展开</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：D。</strong>"知识待在磁盘上，需要时才进入现场"——用加载时机的管理换取稀缺窗口的效率。（PART 4、概念关系说明）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>9. 下列哪项内容最不适合写进（公开仓库的）项目级 Skill？</p>
+  <ol class="opts">
+    <li>包含 API 密钥、密码等敏感信息的操作说明</li>
+    <li>团队统一的报告格式约定</li>
+    <li>个人的周报写作方法</li>
+    <li>重复出现的多步骤任务流程</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：A。</strong>项目级 Skill 会随仓库公开，敏感信息必须排除——这正是 .gitignore 存在的意义。（PART 7 使用边界）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>10. "教一次、永远会"的准确含义是？</p>
+  <ol class="opts">
+    <li>模型记住了用户本人</li>
+    <li>对话历史被服务器永久保存</li>
+    <li>任务方法被沉淀为文件，之后无需在对话中重复交代即可复用</li>
+    <li>模型经过该 Skill 微调，永久记住了这些知识</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>沉淀 ≠ 记忆：Skill 改的是"可被发现的文件"，不是模型权重（D 错）、不是用户画像（A 错），效果是触发时按需加载、复用流程。（PART 3、PART 6）</p>
+  </details>
+</div>
 </section>
 
 <section class="sources">

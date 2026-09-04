@@ -31,8 +31,9 @@ my-learning-workshop/
 ## Skill：concept-study-materials
 
 - **存放路径**：`.workbuddy/skills/concept-study-materials/SKILL.md`（项目级，随仓库共享）
-- **作用**：接收任意一个概念作为学习主题，按固定的九部分结构生成学习资料——学习目标、核心问题、我的解释（个人化语言）、核心机制与组成、具体应用场景、概念辨析、使用边界、自测问题（答案折叠）、参考资料（逐条核实、注明支撑点与核实日期），输出为 HTML 保存到 `learning-materials/`。
+- **作用**：接收任意一个概念作为学习主题，按固定的九部分结构生成学习资料——学习目标、核心问题、我的解释（个人化语言）、核心机制与组成、具体应用场景、概念辨析、使用边界、自测问题、参考资料（逐条核实、注明支撑点与核实日期），输出为 HTML 保存到 `learning-materials/`。
 - **内置约束**：至少 3 条来源且含学术/官方文档；每条链接必须实际访问核实；"我的解释"禁止整段照搬来源。
+- **自测题规范**：固定产出 **10 道单项选择题**，按「基础 3 / 进阶 4 / 挑战 3」三级难度分层；每题 4 个选项且唯一正确答案，干扰项取自常见误解而非凑数项，答案与解析折叠存放并注明对应章节。规范详见 SKILL.md 的「自测题设计规范」小节，因此后续新概念生成的资料会自动沿用同一标准。
 
 ### 如何在 WorkBuddy 中调用
 
@@ -40,7 +41,7 @@ my-learning-workshop/
 2. 直接在对话中说：**"帮我学习 XX 概念"**（如"帮我学习假设检验"）；
 3. WorkBuddy 会根据 Skill 的 name/description 自动匹配并加载 `.workbuddy/skills/concept-study-materials/`；
 4. 也可以显式触发：`/concept-study-materials 假设检验`；
-5. 生成结果保存在 `learning-materials/`，打开 HTML 即可阅读，自测答案点击展开。
+5. 生成结果保存在 `learning-materials/`，打开 HTML 即可阅读，10 道自测题的答案与解析点击展开。
 
 ## 已生成的学习资料
 
@@ -50,6 +51,8 @@ my-learning-workshop/
 | `learning-materials/llm-context.html`                  | 大模型的上下文：token 与自注意力机制、窗口内容构成、"迷失在中间"、应对策略                     | 已人工核查（2026-09-04） |
 | `learning-materials/skill.html`                        | Skill：SKILL.md 结构、渐进式披露三级机制、用户级与项目级、开放标准                      | 已人工核查（2026-09-04） |
 | `learning-materials/concept-relationship.html` / `.md` | 三者关系：上下文是 Agent 的现场与第一约束；Skill 沉淀可复用知识并拓展 Agent 边界            | 已人工核查（2026-09-04） |
+
+> 四份 HTML 各含一套 **10 道单项选择题**（基础 3 / 进阶 4 / 挑战 3），答案与解析折叠存放，点击展开即可核对；正确答案的字母分布已做均衡处理，避免连续同选项。
 
 ## AI 使用与人工核查说明
 

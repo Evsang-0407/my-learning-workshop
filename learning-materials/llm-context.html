@@ -65,6 +65,17 @@
     padding: 2px 10px; border-radius: 999px; vertical-align: 2px; }
   .badge.draft { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
   .badge.checked { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  .quiz-item { margin: 18px 0; padding: 14px 18px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px; }
+  .quiz-item .q { font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-weight: 600; margin: 0 0 8px; line-height: 1.6; }
+  .opts { list-style-type: upper-alpha; margin: 4px 0 12px; padding-left: 30px; }
+  .opts li { margin-bottom: 4px; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .diff { display: inline-block; font-size: 11px; font-family: "PingFang SC", sans-serif;
+    padding: 1px 8px; border-radius: 999px; margin-right: 8px; vertical-align: 2px; }
+  .diff.d1 { background: #dcfce7; color: #166534; }
+  .diff.d2 { background: #dbeafe; color: #1e40af; }
+  .diff.d3 { background: #fce7f3; color: #9d174d; }
   footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted); }
   @media print { body { padding: 0; } details { page-break-inside: avoid; } }
@@ -183,27 +194,147 @@
 
 <section>
   <h2><span class="no">PART 8</span>自测问题</h2>
-  <p>先自己作答，再展开核对。答不上来就回到对应章节重读。</p>
+  <p>共 10 题，按"基础 → 进阶 → 挑战"三级难度分层，覆盖解释、机制、场景、边界四个维度。先自己作答，再展开核对；答不上来就回到对应章节重读。</p>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>1. 上下文窗口的容量以什么为单位衡量？</p>
+  <ol class="opts">
+    <li>字数</li>
+    <li>token</li>
+    <li>字节</li>
+    <li>页数</li>
+  </ol>
   <details>
-    <summary>Q1：为什么大模型会"聊着聊着就忘了前面说过的话"？</summary>
-    <p>对话历史全部装在有限 的上下文窗口里；当累计内容超过窗口容量，早期内容必须被截断或摘要压缩，于是"忘记"。（PART 3、PART 4）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：B。</strong>模型处理语言的最小单位是 token，可能是半个词、一个字或一小段短语；谈窗口容量必须用 token 计量。（PART 4）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>2. 下列哪一项通常不占用上下文窗口的空间？</p>
+  <ol class="opts">
+    <li>工具返回的结果</li>
+    <li>系统提示（System Prompt）</li>
+    <li>对话历史</li>
+    <li>模型的训练数据</li>
+  </ol>
   <details>
-    <summary>Q2：为什么上下文不能无限扩大？说出至少两条代价。</summary>
-    <p>① 自注意力计算量随长度平方级增长——更慢更贵；② Lost in the Middle：中间位置的信息利用率显著下降；③ 更长的上下文带来更大的对抗攻击面（安全风险）。（PART 4、PART 7）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：D。</strong>训练数据在训练时已沉淀进模型权重，属于"长期知识"，不占推理时的窗口；其余三项都在窗口里。（PART 4 窗口内容表、PART 6 辨析）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d1">基础</span>3. 资料把"上下文"类比为模型的什么？</p>
+  <ol class="opts">
+    <li>工作记忆</li>
+    <li>长期知识库</li>
+    <li>性格</li>
+    <li>硬盘</li>
+  </ol>
   <details>
-    <summary>Q3：列出至少三种"装进上下文窗口"的内容。</summary>
-    <p>系统提示、对话历史、工具返回结果、RAG 检索片段、格式字符。（PART 4 表格）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：A。</strong>上下文是推理时"此刻可见"的工作记忆；训练数据才是长期知识，关掉会话还在的得靠外部存储。（PART 3、PART 6）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>4. 基于自注意力机制，注意力计算量随序列长度如何增长？</p>
+  <ol class="opts">
+    <li>线性增长</li>
+    <li>对数增长</li>
+    <li>平方级增长</li>
+    <li>与长度无关</li>
+  </ol>
   <details>
-    <summary>Q4：把窗口从 4K 扩到 1M token，是否就解决了所有问题？</summary>
-    <p>不是。容量问题缓解了，但带来成本（平方级计算）、中间内容利用率下降（Lost in the Middle）与更大的安全攻击面等新问题；工程上仍需要 RAG、摘要压缩、按需加载等策略配合。（PART 4、PART 7）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>token 数翻倍，计算量约变 4 倍——这是长上下文"更慢更贵"的直接原因。（PART 4）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>5. "Lost in the Middle"研究的核心发现是？</p>
+  <ol class="opts">
+    <li>模型完全无法处理超过 1 万 token 的文本</li>
+    <li>相关信息位于开头或结尾时表现最好，位于中间时性能显著下降</li>
+    <li>模型只能记住对话的最后一句</li>
+    <li>窗口越大，中间位置信息利用率越高</li>
+  </ol>
   <details>
-    <summary>Q5：Agent 的每一步决策和上下文是什么关系？</summary>
-    <p>上下文是 Agent 唯一的"工作现场"：它感知到的目标、历史、工具反馈全部经由上下文进入模型，决策质量取决于此刻窗口里有什么、信息放在哪个位置。（PART 3，详见《Agent》《Skill》两份资料）</p>
+    <summary>答案与解析</summary>
+    <p><strong>答案：B。</strong>位置效应：即使是对长上下文优化的模型也如此；这解释了"窗口大 ≠ 用得好"。（PART 4、PART 7）</p>
   </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>6. 长对话中模型"聊着聊着就忘了前面说过的话"，最准确的原因是？</p>
+  <ol class="opts">
+    <li>模型被设计成故意遗忘旧信息</li>
+    <li>网络连接不稳定导致消息丢失</li>
+    <li>累计内容超过窗口容量，早期内容被截断或摘要压缩</li>
+    <li>对话过程中模型权重被更新了</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>对话历史全部装在有限的窗口里，超了就要截断/压缩，表现为"遗忘"。（PART 3、PART 4）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d2">进阶</span>7. 自注意力机制在上下文处理中的基本作用是？</p>
+  <ol class="opts">
+    <li>计算序列中每个 token 与其他 token 的相关性权重</li>
+    <li>对输入文本进行加密传输</li>
+    <li>把文字切分成 token（分词）</li>
+    <li>压缩模型体积，降低显存占用</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：A。</strong>逐 token 生成时不断"回看"前文并计算相关性，这是模型利用上下文（也是成本平方级增长）的根源。（PART 4；分词是另一回事）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>8. RAG（检索增强生成）能缓解上下文压力的原理是？</p>
+  <ol class="opts">
+    <li>它降低了 token 化的字符开销</li>
+    <li>它扩大了模型的上下文窗口上限</li>
+    <li>它修改了模型权重，让模型记住更多</li>
+    <li>它只把检索到的相关片段注入上下文，而非把全部资料塞入</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：D。</strong>RAG 改变的是"进窗口的内容"而不是"窗口本身"——先检索后注入，是应对窗口稀缺的按需策略。（PART 4 应对策略、PART 5）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>9. 关于"把窗口从 4K 扩到 1M"，下列说法最准确的是？</p>
+  <ol class="opts">
+    <li>长上下文模型不受"迷失在中间"效应影响</li>
+    <li>容量问题解决后，中间信息的利用率问题也随之解决</li>
+    <li>窗口扩大在缓解容量的同时，带来成本、中间利用率下降与攻击面增大等新问题</li>
+    <li>窗口大小与推理成本无关</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：C。</strong>更大窗口 = 更贵更慢（平方级）+ 中间信息利用率下降 + 更大的对抗攻击面；研究明确指出长上下文模型同样受位置效应影响。（PART 4、PART 7）</p>
+  </details>
+</div>
+
+<div class="quiz-item">
+  <p class="q"><span class="diff d3">挑战</span>10. "把示例直接放进提示词让模型现学"（上下文学习）与"微调"的对比，正确的是？</p>
+  <ol class="opts">
+    <li>两者都改变了模型权重</li>
+    <li>前者改变的是这一次的输入（上下文），后者改变的是模型权重</li>
+    <li>两者效果与成本完全等价</li>
+    <li>微调不需要训练数据和算力</li>
+  </ol>
+  <details>
+    <summary>答案与解析</summary>
+    <p><strong>答案：B。</strong>上下文学习改"这次输入"，即写即用、会话结束即失效；微调改模型本身，需要数据和算力，但效果持久。（PART 6 辨析表）</p>
+  </details>
+</div>
 </section>
 
 <section class="sources">
