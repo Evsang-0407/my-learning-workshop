@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念关系：Agent · 上下文 · Skill</title>
+<style>
+  :root {
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --accent: #b45309;
+    --accent-soft: #fffbeb;
+    --line: #e5e7eb;
+    --bg: #ffffff;
+    --card: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", Georgia, serif;
+    color: var(--ink); background: var(--bg);
+    max-width: 820px; margin: 0 auto; padding: 48px 28px 80px;
+    line-height: 1.85; font-size: 16.5px;
+  }
+  header { border-bottom: 3px double var(--line); padding-bottom: 24px; margin-bottom: 36px; }
+  .kicker { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--accent);
+    font-size: 13px; letter-spacing: .35em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-size: 32px; margin: 0 0 6px; line-height: 1.3; }
+  .en { color: var(--muted); font-style: italic; font-size: 16px; margin: 0; }
+  .meta { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted);
+    margin-top: 14px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .meta span { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; }
+  h2 {
+    font-size: 21px; margin: 52px 0 18px; padding-left: 14px;
+    border-left: 4px solid var(--accent); line-height: 1.4;
+  }
+  h2 .no { color: var(--accent); font-size: 14px; font-family: "PingFang SC", sans-serif;
+    display: block; letter-spacing: .2em; margin-bottom: 2px; }
+  p { margin: 0 0 16px; }
+  em { font-style: normal; background: linear-gradient(transparent 62%, rgba(180,83,9,.18) 62%); }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 15px;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  th, td { border: 1px solid var(--line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--card); font-weight: 600; }
+  blockquote {
+    margin: 22px 0; padding: 14px 20px; background: var(--accent-soft);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; color: #78350f;
+  }
+  blockquote p { margin: 0; }
+  .diagram { margin: 26px 0; text-align: center; }
+  .diagram svg { max-width: 100%; height: auto; }
+  ol li, ul li { margin-bottom: 8px; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(180,83,9,.3); }
+  .badge { display: inline-block; font-family: "PingFang SC", sans-serif; font-size: 11.5px;
+    padding: 2px 10px; border-radius: 999px; vertical-align: 2px; }
+  .badge.draft { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">概念关系说明</p>
+  <h1>Agent · 大模型的上下文 · Skill</h1>
+  <p class="en">How the three concepts work together</p>
+  <div class="meta">
+    <span>生成工具：concept-study-materials Skill</span>
+    <span>生成日期：2026-09-04</span>
+    <span>核查状态：<span class="badge draft">AI 初稿 · 待人工核查</span></span>
+  </div>
+</header>
+
+<section>
+  <h2><span class="no">01</span>三个概念的一句话定位</h2>
+  <table>
+    <tr><th>概念</th><th>一句话定位</th><th>它回答的问题</th></tr>
+    <tr><td><strong>Agent</strong></td><td>以 LLM 为大脑、在循环中自主调用工具完成目标的系统</td><td>谁来执行、怎么推进任务</td></tr>
+    <tr><td><strong>大模型的上下文</strong></td><td>模型单次推理能"看见"的全部输入，容量按 token 计的"工作记忆"</td><td>执行时模型能依据什么</td></tr>
+    <tr><td><strong>Skill</strong></td><td>把可复用的任务知识打包成模型可按需加载的文件（SKILL.md + 资源）</td><td>经验如何沉淀、复用与共享</td></tr>
+  </table>
+  <p>我的总理解是：<em>Agent 负责"执行"，上下文是执行的"现场"，Skill 让执行"越做越好、越做越专"</em>。三者不是并列的三个功能，而是一个系统里的三种角色。</p>
+</section>
+
+<section>
+  <h2><span class="no">02</span>关系图</h2>
+  <div class="diagram">
+    <svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent、上下文、Skill 三者关系图">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+        </marker>
+      </defs>
+      <!-- Skill 节点 -->
+      <rect x="30" y="120" width="170" height="90" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+      <text x="115" y="155" text-anchor="middle" font-size="19" font-weight="700" fill="#4c1d95" font-family="PingFang SC, Microsoft YaHei, sans-serif">Skill</text>
+      <text x="115" y="182" text-anchor="middle" font-size="12.5" fill="#6d28d9" font-family="PingFang SC, Microsoft YaHei, sans-serif">沉淀的任务知识</text>
+      <!-- 上下文节点 -->
+      <rect x="255" y="120" width="170" height="90" rx="14" fill="#f0fdfa" stroke="#0d9488" stroke-width="2"/>
+      <text x="340" y="148" text-anchor="middle" font-size="17" font-weight="700" fill="#134e4a" font-family="PingFang SC, Microsoft YaHei, sans-serif">大模型的上下文</text>
+      <text x="340" y="172" text-anchor="middle" font-size="12.5" fill="#0f766e" font-family="PingFang SC, Microsoft YaHei, sans-serif">运行时的工作现场</text>
+      <text x="340" y="192" text-anchor="middle" font-size="12.5" fill="#0f766e" font-family="PingFang SC, Microsoft YaHei, sans-serif">（容量按 token 有限）</text>
+      <!-- Agent 节点 -->
+      <rect x="480" y="120" width="170" height="90" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+      <text x="565" y="155" text-anchor="middle" font-size="19" font-weight="700" fill="#1e3a8a" font-family="PingFang SC, Microsoft YaHei, sans-serif">Agent</text>
+      <text x="565" y="182" text-anchor="middle" font-size="12.5" fill="#1d4ed8" font-family="PingFang SC, Microsoft YaHei, sans-serif">自主执行的大脑</text>
+      <!-- Skill -> 上下文 -->
+      <line x1="200" y1="165" x2="248" y2="165" stroke="#6b7280" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="224" y="105" text-anchor="middle" font-size="12" fill="#4b5563" font-family="PingFang SC, Microsoft YaHei, sans-serif">按需加载</text>
+      <text x="224" y="122" text-anchor="middle" font-size="11" fill="#9ca3af" font-family="PingFang SC, Microsoft YaHei, sans-serif">渐进式披露</text>
+      <!-- 上下文 -> Agent -->
+      <line x1="425" y1="165" x2="473" y2="165" stroke="#6b7280" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="449" y="105" text-anchor="middle" font-size="12" fill="#4b5563" font-family="PingFang SC, Microsoft YaHei, sans-serif">提供决策依据</text>
+      <text x="449" y="122" text-anchor="middle" font-size="11" fill="#9ca3af" font-family="PingFang SC, Microsoft YaHei, sans-serif">窗口里有什么，</text>
+      <text x="449" y="139" text-anchor="middle" font-size="11" fill="#9ca3af" font-family="PingFang SC, Microsoft YaHei, sans-serif">它就依据什么决策</text>
+      <!-- Agent -> 工具世界 -->
+      <line x1="565" y1="215" x2="565" y2="270" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+      <text x="565" y="292" text-anchor="middle" font-size="12" fill="#64748b" font-family="PingFang SC, Microsoft YaHei, sans-serif">调用工具，作用于外部世界</text>
+      <!-- Agent 沉淀 -> Skill（底部大弧线） -->
+      <path d="M 565 215 C 565 320, 115 320, 115 218" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="340" y="316" text-anchor="middle" font-size="12" fill="#92400e" font-family="PingFang SC, Microsoft YaHei, sans-serif">把行之有效的流程沉淀为可复用的 Skill（教一次，永远会）</text>
+      <!-- 对话历史进入上下文 -->
+      <line x1="340" y1="215" x2="340" y2="270" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+      <text x="340" y="292" text-anchor="middle" font-size="12" fill="#64748b" font-family="PingFang SC, Microsoft YaHei, sans-serif">对话与工具结果不断写入</text>
+    </svg>
+  </div>
+</section>
+
+<section>
+  <h2><span class="no">03</span>上下文如何影响 Agent 的工作</h2>
+  <p>上下文是 Agent <em>唯一的"工作现场"</em>：它感知的目标、记住的历史、工具返回的反馈，全部要经由上下文进入模型。因此上下文的三个特性直接塑造了 Agent 的工作方式：</p>
+  <ol>
+    <li><strong>有限性 → Agent 必须管理注意力。</strong>窗口装不下所有信息，所以真实 Agent 系统都用"按需读取"策略：搜索定位、只读相关文件、无关输出不进窗口（我在完成本作业核实来源时，助手就是按需抓取网页而非全文塞入）。</li>
+    <li><strong>位置效应 → 重要信息要放对地方。</strong>"迷失在中间"研究表明模型对开头结尾的信息利用最好，所以给 Agent 的关键指令通常放在系统提示（最前），而不是埋在长文档中段。</li>
+    <li><strong>成本随长度增长 → Agent 的"思考"是有价的。</strong>注意力计算量随长度平方级增长，Agent 循环越多轮、历史越长，每一步都更贵更慢，这决定了 Agent 的任务拆解不能无限细。</li>
+  </ol>
+  <p>换句话说：<em>上下文的稀缺性，是 Agent 工程化设计的第一约束</em>。</p>
+</section>
+
+<section>
+  <h2><span class="no">04</span>Skill 如何沉淀可复用的任务知识</h2>
+  <p>如果说上下文的特性带来了约束，Skill 就是为化解这种约束而生的工程答案之一：</p>
+  <ol>
+    <li><strong>沉淀：从"易失"到"持久"。</strong>一段有效的做法如果只存在于对话历史里，会话结束就消失了；写成 SKILL.md 落在磁盘上，就变成了可版本管理、可迭代的资产（本仓库本身就在演示这一点）。</li>
+    <li><strong>复用：渐进式披露对冲上下文稀缺。</strong>Skill 平时只有 name + description 占据极小的上下文空间，被判断相关时才加载正文，捆绑资源更晚加载——"知识待在磁盘上，需要时才进入现场"。</li>
+    <li><strong>共享：项目级 Skill 让知识随仓库流动。</strong>放在仓库 <code>.workbuddy/skills/</code> 里的 Skill，对每一个打开这个仓库的人生效，团队约定因此可以像代码一样被 review、被提交。</li>
+  </ol>
+  <p>同时，Skill 也反过来<em>改变 Agent 的能力边界</em>：通用 Agent 谁都能用但不专精；加载了某个 Skill 的 Agent 立刻获得该领域的流程、规范和工具知识——就像新员工拿到了入职手册。</p>
+</section>
+
+<section>
+  <h2><span class="no">05</span>一个闭环实例：本次作业如何同时用到三者</h2>
+  <p>生成这三份学习资料的过程，恰好是三个概念的一次完整协作：</p>
+  <ol>
+    <li>我（人）在 WorkBuddy 里发出目标：完成作业（此时，一个 <strong>Agent</strong> 开始运转）；</li>
+    <li>它按需加载了 Skill 创建规范和本仓库的 <strong>Skill</strong>（concept-study-materials 的说明进入它的<strong>上下文</strong>）；</li>
+    <li>在循环中：检查环境 → 建仓库 → 核实来源（遇到区域受限链接，依据反馈换来源）→ 生成资料 → 自检——每一步的决策都由当时的上下文决定，每一步的执行结果又写回上下文；</li>
+    <li>最后，"九部分结构 + 来源核实 + 自检清单"这套被验证有效的流程，以 SKILL.md 的形式沉淀下来——下一个概念（比如"假设检验"）可以直接复用。</li>
+  </ol>
+  <blockquote>
+    <p>我的个人判断：这三个概念里最容易被低估的是<strong>上下文管理</strong>。大家追逐 Agent 的自主性、比拼 Skill 的数量，但日常体验的好坏往往取决于"此刻窗口里放了什么"。同样地，Agent 的能力上限并不等于模型智力，而在于三者的工程组合——这也是为什么"从最简单的方案开始"（Anthropic 的工程建议）比"堆砌复杂框架"更接近用好 AI 的正确路径。</p>
+  </blockquote>
+</section>
+
+<footer>
+  <p>Mermaid 版本的关系图见同目录下 <a href="concept-relationship.md">concept-relationship.md</a>（Markdown + Mermaid 源码，便于在 GitHub 上直接渲染）。</p>
+  <p>本说明由 <a href="https://github.com/Evsang-0407/my-learning-workshop">my-learning-workshop</a> 仓库的 concept-study-materials Skill 生成初稿，经学习者本人核查修订。</p>
+</footer>
+
+</body>
+</html>

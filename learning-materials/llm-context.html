@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型的上下文 · 概念学习资料</title>
+<style>
+  :root {
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --accent: #0d9488;
+    --accent-soft: #f0fdfa;
+    --line: #e5e7eb;
+    --bg: #ffffff;
+    --card: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", Georgia, serif;
+    color: var(--ink); background: var(--bg);
+    max-width: 820px; margin: 0 auto; padding: 48px 28px 80px;
+    line-height: 1.85; font-size: 16.5px;
+  }
+  header { border-bottom: 3px double var(--line); padding-bottom: 24px; margin-bottom: 36px; }
+  .kicker { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--accent);
+    font-size: 13px; letter-spacing: .35em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-size: 34px; margin: 0 0 6px; line-height: 1.3; }
+  .en { color: var(--muted); font-style: italic; font-size: 16px; margin: 0; }
+  .meta { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted);
+    margin-top: 14px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .meta span { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; }
+  h2 {
+    font-size: 21px; margin: 52px 0 18px; padding-left: 14px;
+    border-left: 4px solid var(--accent); line-height: 1.4;
+  }
+  h2 .no { color: var(--accent); font-size: 14px; font-family: "PingFang SC", sans-serif;
+    display: block; letter-spacing: .2em; margin-bottom: 2px; }
+  p { margin: 0 0 16px; }
+  blockquote {
+    margin: 22px 0; padding: 14px 20px; background: var(--accent-soft);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; color: #134e4a;
+  }
+  blockquote p { margin: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 15px;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  th, td { border: 1px solid var(--line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--card); font-weight: 600; }
+  .scenario { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px 24px; margin: 20px 0; }
+  .scenario h3 { margin: 0 0 12px; font-size: 17px; color: var(--accent); }
+  ol li, ul li { margin-bottom: 8px; }
+  details {
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px 18px;
+    margin: 12px 0; background: var(--bg);
+  }
+  summary { cursor: pointer; font-weight: 600; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  details[open] summary { border-bottom: 1px dashed var(--line); padding-bottom: 8px; margin-bottom: 10px; }
+  .sources ol { padding-left: 22px; }
+  .sources li { margin-bottom: 14px; font-size: 15px; }
+  .sources .src-meta { font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 12.5px; color: var(--muted); display: block; margin-top: 2px; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(13,148,136,.3); }
+  a:hover { border-bottom-color: var(--accent); }
+  .badge { display: inline-block; font-family: "PingFang SC", sans-serif; font-size: 11.5px;
+    padding: 2px 10px; border-radius: 999px; vertical-align: 2px; }
+  .badge.draft { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+  .badge.checked { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted); }
+  @media print { body { padding: 0; } details { page-break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">概念学习资料</p>
+  <h1>大模型的上下文</h1>
+  <p class="en">Context &amp; Context Window — the working memory of an LLM</p>
+  <div class="meta">
+    <span>生成工具：concept-study-materials Skill</span>
+    <span>生成日期：2026-09-04</span>
+    <span>核查状态：<span class="badge draft">AI 初稿 · 待人工核查</span></span>
+  </div>
+</header>
+
+<section>
+  <h2><span class="no">PART 1</span>学习目标</h2>
+  <p>学完这份资料，你应该能够：</p>
+  <ol>
+    <li>解释<em>上下文窗口</em>是什么、以什么单位衡量、里面装了哪些东西；</li>
+    <li>说明上下文的<em>底层处理机制</em>（token 化 + 自注意力）；</li>
+    <li>描述上下文如何<em>制约 Agent 的工作方式</em>（有限容量、"迷失在中间"效应、成本）；</li>
+    <li>说出至少三种应对上下文有限的常见工程策略。</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="no">PART 2</span>核心问题</h2>
+  <p>带着下面的问题往下读，读完回到这里检验自己能否回答：</p>
+  <blockquote>
+    为什么大模型会"聊着聊着就忘了前面说过的话"？把上下文窗口从 4K 扩到 1M，是不是所有问题就迎刃而解了——还是带来了新的问题？
+  </blockquote>
+</section>
+
+<section>
+  <h2><span class="no">PART 3</span>我的解释</h2>
+  <p>我理解的"上下文"，是模型<em>在一次推理中能"看见"的全部输入</em>——系统提示、我们说过的话、工具返回的结果、贴进去的文档，全都装在一个叫<em>上下文窗口</em>的容器里。它就像模型的"工作记忆"：容量按 token 计算，装不下的就会被截断或压缩掉。这个容器有几个关键事实：它不只是装"我说的话"；它越大算得越贵、越慢；而且<em>装得下不等于用得好</em>——模型对开头和结尾的信息利用得最好，长文本中间的内容容易被"忽略"。对 Agent 来说，上下文就是它唯一的工作现场：它的一切决策，都取决于此刻窗口里有什么。</p>
+</section>
+
+<section>
+  <h2><span class="no">PART 4</span>核心机制与组成</h2>
+  <p><strong>1）token 化：上下文的计量单位。</strong>模型处理语言的最小单位不是字，而是 token——可能是一个字、半个词或一小段常用短语。IBM 的科普给出一个实用估算：英文约 1.5 个 token 对应一个词；而不同语言的 token 效率差异很大（同样的句子，某些语言消耗的 token 可能是英文的好几倍），中文也普遍比英文"贵"。这也是为什么"能装多少字"没有统一答案。</p>
+  <p><strong>2）自注意力：上下文的处理机制。</strong>Transformer 架构用自注意力（self-attention）计算序列中每个 token 与其他 token 的相关性权重，逐 token 生成输出时不断"回看"前文。这个机制是一切的基础（"Attention Is All You Need"，2017），也是限制的来源：注意力计算量随序列长度<em>平方级</em>增长——token 数翻倍，计算量约变 4 倍，推理更慢、更贵。</p>
+  <p><strong>3）上下文窗口里装的不止是你的话：</strong></p>
+  <table>
+    <tr><th>内容</th><th>说明</th></tr>
+    <tr><td>系统提示（System Prompt）</td><td>常被隐藏、用户看不见，规定模型的行为方式</td></tr>
+    <tr><td>对话历史</td><td>你说过的每句话和模型的每次回复</td></tr>
+    <tr><td>工具返回结果</td><td>Agent 场景下，搜索结果、命令输出、文件内容都占这里的空间</td></tr>
+    <tr><td>检索注入的资料</td><td>RAG 从外部知识库检索来的文档片段</td></tr>
+    <tr><td>格式字符</td><td>换行、特殊符号等格式开销也消耗 token</td></tr>
+  </table>
+  <p><strong>4）"迷失在中间"（Lost in the Middle）：</strong>斯坦福等机构 2023 年的研究发现，模型利用长上下文的能力并不均匀——相关信息位于<em>开头或结尾</em>时表现最好，位于<em>中间</em>时性能显著下降，即使是长上下文模型也是如此。这说明：窗口大 ≠ 中间的内容被好好用了。</p>
+  <p><strong>5）窗口大小的量级（变化很快，仅作参照）：</strong>按 IBM 文章截至 2024-10 的数据：GPT-3.5 为 4K~8K，GPT-4/4o 与 Llama 3.1 为 128K，Claude 3.5 Sonnet 约 200K，Gemini 1.5 Pro 最高达 2M token。三年间扩大了数百倍，且仍在增长。</p>
+  <p><strong>6）常见的应对策略：</strong>超长内容先检索后注入（RAG）、对话历史摘要压缩、把稳定知识外置成文件按需读取（而非全程占据窗口）、以及把可复用流程沉淀成 Skill 按需加载。</p>
+</section>
+
+<section>
+  <h2><span class="no">PART 5</span>具体应用场景</h2>
+  <div class="scenario">
+    <h3>场景：用 AI 编程助手（Agent）处理一个大型项目</h3>
+    <p>假设一个有几十万行代码的仓库要交给 AI 助手维护。第一种做法是把整个代码库塞进上下文——很快会发现：一是<em>塞不下</em>（超过窗口上限），二是<em>塞得下也太贵太慢</em>（注意力计算平方级增长），三是即使塞进去了，目标代码"迷失在中间"，模型照样出错。</p>
+    <p>实际工程中的做法是分层"喂"：</p>
+    <ul>
+      <li>常驻上下文的只有精炼的<em>项目说明</em>（约定、结构、注意事项）；</li>
+      <li>需要某段代码时，用<em>搜索工具</em>定位并只读取相关文件；</li>
+      <li>执行命令的输出只在需要时查看，不相关的输出不进入后续对话；</li>
+      <li>可复用的操作规范沉淀成 <em>Skill</em>，触发时才加载进来。</li>
+    </ul>
+    <p>我在完成本次作业时就亲历了这个逻辑：生成资料需要核实 9 个来源，但助手并没有把所有网页全文都装进上下文，而是<em>按需抓取、即时消化、只保留结论</em>——这就是在上下文稀缺的约束下工作的真实样子。</p>
+  </div>
+  <p>其他常见场景（简列）：长文档问答（超长 PDF 分段检索后再注入）；多轮长对话自动摘要早期内容，防止"遗忘"关键约定。</p>
+</section>
+
+<section>
+  <h2><span class="no">PART 6</span>概念辨析</h2>
+  <table>
+    <tr><th>易混淆对象</th><th>关键区别</th><th>一句话判据</th></tr>
+    <tr>
+      <td><strong>上下文窗口 vs. 训练数据</strong></td>
+      <td>窗口是推理时"此刻可见"的工作记忆；训练数据是训练时沉淀进模型权重的长期知识</td>
+      <td>窗口里的它会"看见"，训练数据里的它只"记得大概"</td>
+    </tr>
+    <tr>
+      <td><strong>上下文窗口 vs. 长期记忆（Memory）</strong></td>
+      <td>窗口是模型内置且有限的；长期记忆靠外部存储（文件、向量库），需要工程手段挂接</td>
+      <td>关掉会话还在不在</td>
+    </tr>
+    <tr>
+      <td><strong>上下文学习（in-context learning）vs. 微调（fine-tuning）</strong></td>
+      <td>前者把示例放进上下文，改的是"这次输入"；后者改的是模型权重，成本和效果都完全不同</td>
+      <td>改提示词 or 改模型本身</td>
+    </tr>
+    <tr>
+      <td><strong>token vs. 字 / 词</strong></td>
+      <td>token 是模型视角的最小单位，与人类语言的字词不是一回事，且不同语言效率不同</td>
+      <td>谈窗口容量时必须用 token 计量</td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2><span class="no">PART 7</span>使用边界</h2>
+  <p><strong>适合依赖大上下文的情形：</strong>长文档整体理解（跨段落的综合与对照）；长对话中保持连贯；一次性给出充足的领域资料让模型"现场学会"（上下文学习）。</p>
+  <p><strong>不适合 / 需要警惕的情形：</strong></p>
+  <ul>
+    <li>以为"窗口大就往里塞一切"——中间信息利用率下降（Lost in the Middle），且成本随长度平方级增长；</li>
+    <li>把敏感信息（密码、隐私、密钥）放进上下文——既可能被记录，也可能被注入的恶意指令读取，IBM 的文章还指出更长的上下文会带来更大的对抗攻击面；</li>
+    <li>指望窗口替代长期记忆——会话一结束，窗口里的内容就没了，需要沉淀的东西应外置保存；</li>
+    <li>引用具体模型参数（如"128K 窗口"）时必须注明版本与时间点——这个数字变化极快。</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="no">PART 8</span>自测问题</h2>
+  <p>先自己作答，再展开核对。答不上来就回到对应章节重读。</p>
+  <details>
+    <summary>Q1：为什么大模型会"聊着聊着就忘了前面说过的话"？</summary>
+    <p>对话历史全部装在有限 的上下文窗口里；当累计内容超过窗口容量，早期内容必须被截断或摘要压缩，于是"忘记"。（PART 3、PART 4）</p>
+  </details>
+  <details>
+    <summary>Q2：为什么上下文不能无限扩大？说出至少两条代价。</summary>
+    <p>① 自注意力计算量随长度平方级增长——更慢更贵；② Lost in the Middle：中间位置的信息利用率显著下降；③ 更长的上下文带来更大的对抗攻击面（安全风险）。（PART 4、PART 7）</p>
+  </details>
+  <details>
+    <summary>Q3：列出至少三种"装进上下文窗口"的内容。</summary>
+    <p>系统提示、对话历史、工具返回结果、RAG 检索片段、格式字符。（PART 4 表格）</p>
+  </details>
+  <details>
+    <summary>Q4：把窗口从 4K 扩到 1M token，是否就解决了所有问题？</summary>
+    <p>不是。容量问题缓解了，但带来成本（平方级计算）、中间内容利用率下降（Lost in the Middle）与更大的安全攻击面等新问题；工程上仍需要 RAG、摘要压缩、按需加载等策略配合。（PART 4、PART 7）</p>
+  </details>
+  <details>
+    <summary>Q5：Agent 的每一步决策和上下文是什么关系？</summary>
+    <p>上下文是 Agent 唯一的"工作现场"：它感知到的目标、历史、工具反馈全部经由上下文进入模型，决策质量取决于此刻窗口里有什么、信息放在哪个位置。（PART 3，详见《Agent》《Skill》两份资料）</p>
+  </details>
+</section>
+
+<section class="sources">
+  <h2><span class="no">PART 9</span>参考资料</h2>
+  <ol>
+    <li>
+      <strong>What is a context window?</strong>（什么是上下文窗口）
+      <span class="src-meta">IBM Think（作者 Dave Bergmann）· <a href="https://www.ibm.com/think/topics/context-window">https://www.ibm.com/think/topics/context-window</a> · 支撑 PART 3/4 的定义、token 化、平方级计算代价、窗口内容构成表、各家模型窗口大小数据（截至 2024-10）及 PART 7 的安全风险</span>
+    </li>
+    <li>
+      <strong>Attention Is All You Need</strong>（Transformer 论文）
+      <span class="src-meta">Vaswani et al. · arXiv:1706.03762 · 提出于 2017-06-12 · <a href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a> · 支撑 PART 4 的自注意力机制——上下文处理能力的架构基础</span>
+    </li>
+    <li>
+      <strong>Lost in the Middle: How Language Models Use Long Contexts</strong>（迷失在中间）
+      <span class="src-meta">Liu, Lin, Hewitt et al.（斯坦福等）· arXiv:2307.03172 · 2023 年提交，发表于 TACL 2023 · <a href="https://arxiv.org/abs/2307.03172">https://arxiv.org/abs/2307.03172</a> · 支撑 PART 4 的"位置效应"与 PART 7 的"窗口大≠用得好"</span>
+    </li>
+    <li>
+      <strong>Building effective agents</strong>（如何构建高效的 Agent）
+      <span class="src-meta">Anthropic Engineering Blog · 发布于 2024-12-19 · <a href="https://www.anthropic.com/engineering/building-effective-agents">https://www.anthropic.com/engineering/building-effective-agents</a> · 支撑 PART 5 中"管理上下文/注意力是构建 Agent 的核心难题"的论断</span>
+    </li>
+  </ol>
+  <p style="font-size:13px;color:var(--muted);">以上链接均于 2026-09-04 逐一访问核实，确认内容存在且支撑正文相应论断。</p>
+</section>
+
+<footer>
+  <p>本资料为概念学习资料生成 Skill（concept-study-materials）的第一次实战产物：由 AI 按九部分结构生成初稿，学习者本人负责逐节核查与修订。</p>
+  <p>本资料由 <a href="https://github.com/Evsang-0407/my-learning-workshop">my-learning-workshop</a> 仓库的 concept-study-materials Skill 生成初稿，经学习者本人核查修订。</p>
+</footer>
+
+</body>
+</html>

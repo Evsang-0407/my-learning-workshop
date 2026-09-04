@@ -1,0 +1,26 @@
+# 敏感信息与凭证 —— 绝不提交
+.env
+.env.*
+*.key
+*.pem
+*_password*
+secrets/
+credentials/
+token.txt
+
+# WorkBuddy 本地会话数据（不属于仓库交付内容，仅保留 skills/）
+.workbuddy/memory/
+.workbuddy/*.local.*
+
+# 操作系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# 临时文件
+*.tmp
+*.log
+~$*

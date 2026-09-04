@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill（AI 智能体的技能）· 概念学习资料</title>
+<style>
+  :root {
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --accent: #7c3aed;
+    --accent-soft: #f5f3ff;
+    --line: #e5e7eb;
+    --bg: #ffffff;
+    --card: #f9fafb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", Georgia, serif;
+    color: var(--ink); background: var(--bg);
+    max-width: 820px; margin: 0 auto; padding: 48px 28px 80px;
+    line-height: 1.85; font-size: 16.5px;
+  }
+  header { border-bottom: 3px double var(--line); padding-bottom: 24px; margin-bottom: 36px; }
+  .kicker { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--accent);
+    font-size: 13px; letter-spacing: .35em; text-transform: uppercase; margin: 0 0 10px; }
+  h1 { font-size: 34px; margin: 0 0 6px; line-height: 1.3; }
+  .en { color: var(--muted); font-style: italic; font-size: 16px; margin: 0; }
+  .meta { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted);
+    margin-top: 14px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .meta span { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; }
+  h2 {
+    font-size: 21px; margin: 52px 0 18px; padding-left: 14px;
+    border-left: 4px solid var(--accent); line-height: 1.4;
+  }
+  h2 .no { color: var(--accent); font-size: 14px; font-family: "PingFang SC", sans-serif;
+    display: block; letter-spacing: .2em; margin-bottom: 2px; }
+  p { margin: 0 0 16px; }
+  blockquote {
+    margin: 22px 0; padding: 14px 20px; background: var(--accent-soft);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; color: #4c1d95;
+  }
+  blockquote p { margin: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 15px;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  th, td { border: 1px solid var(--line); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--card); font-weight: 600; }
+  .scenario { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px 24px; margin: 20px 0; }
+  .scenario h3 { margin: 0 0 12px; font-size: 17px; color: var(--accent); }
+  ol li, ul li { margin-bottom: 8px; }
+  details {
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px 18px;
+    margin: 12px 0; background: var(--bg);
+  }
+  summary { cursor: pointer; font-weight: 600; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  details[open] summary { border-bottom: 1px dashed var(--line); padding-bottom: 8px; margin-bottom: 10px; }
+  .sources ol { padding-left: 22px; }
+  .sources li { margin-bottom: 14px; font-size: 15px; }
+  .sources .src-meta { font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 12.5px; color: var(--muted); display: block; margin-top: 2px; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(124,58,237,.3); }
+  a:hover { border-bottom-color: var(--accent); }
+  .badge { display: inline-block; font-family: "PingFang SC", sans-serif; font-size: 11.5px;
+    padding: 2px 10px; border-radius: 999px; vertical-align: 2px; }
+  .badge.draft { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+  .badge.checked { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 12.5px; color: var(--muted); }
+  @media print { body { padding: 0; } details { page-break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">概念学习资料</p>
+  <h1>Skill（AI 智能体的技能）</h1>
+  <p class="en">Skill — packaged procedural knowledge an agent loads on demand</p>
+  <div class="meta">
+    <span>生成工具：concept-study-materials Skill</span>
+    <span>生成日期：2026-09-04</span>
+    <span>核查状态：<span class="badge draft">AI 初稿 · 待人工核查</span></span>
+  </div>
+</header>
+
+<section>
+  <h2><span class="no">PART 1</span>学习目标</h2>
+  <p>学完这份资料，你应该能够：</p>
+  <ol>
+    <li>说清 Skill <em>是什么、解决什么问题</em>（把重复的任务知识沉淀成可复用能力）；</li>
+    <li>描述 SKILL.md 的<em>结构</em>（YAML 元数据 + 指令正文）与<em>渐进式披露</em>机制；</li>
+    <li>区分<em>用户级与项目级</em> Skill 的存放位置和作用范围；</li>
+    <li>对一个重复出现的任务，判断"<em>是否值得做成 Skill</em>"，并知道动手做的最小路径。</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="no">PART 2</span>核心问题</h2>
+  <p>带着下面的问题往下读，读完回到这里检验自己能否回答：</p>
+  <blockquote>
+    同样的任务说明，为什么要反复粘贴进对话，而不能"教一次、永远会"？Skill 的内容什么时候才会进入模型的上下文，为什么要这样设计？
+  </blockquote>
+</section>
+
+<section>
+  <h2><span class="no">PART 3</span>我的解释</h2>
+  <p>我理解的 Skill，是<em>把"某类任务该怎么做"的程序性知识打包成模型可以按需加载的文件夹</em>：一个 SKILL.md 说清适用场景、步骤和输出要求，还可以带上脚本、参考资料和模板。它解决的是"重复教学"问题——与其每次都在对话里重新描述一遍怎么做事，不如写一次、之后自动生效。Anthropic 的工程师把它类比成<em>给新员工写的入职手册</em>，我很认同这个类比：它不改变员工（模型）的智力，只改变他的"熟悉程度"。最妙的是加载方式：平时只有一张"目录卡片"（名称 + 描述）摆在模型的案头，真正干活时才把手册正文翻开——既不浪费上下文，又随时可用。</p>
+</section>
+
+<section>
+  <h2><span class="no">PART 4</span>核心机制与组成</h2>
+  <p><strong>1）基本结构：</strong>一个 Skill 就是包含 SKILL.md 的目录：</p>
+  <table>
+    <tr><th>组成</th><th>必需性</th><th>作用</th></tr>
+    <tr><td>SKILL.md — YAML 元数据</td><td>必需</td><td>文件顶部 <code>---</code> 之间的 name 和 description，是模型的"目录卡片"，决定它判断这个 Skill 何时相关</td></tr>
+    <tr><td>SKILL.md — 指令正文</td><td>必需</td><td>适用场景、输入、步骤、输出结构、自检要求等操作指南</td></tr>
+    <tr><td>scripts/</td><td>可选</td><td>可执行脚本，需要确定性可靠时用，执行不必载入上下文</td></tr>
+    <tr><td>references/</td><td>可选</td><td>详细参考资料，需要时才读入</td></tr>
+    <tr><td>assets/</td><td>可选</td><td>模板、字体等产出时使用的资源</td></tr>
+  </table>
+  <p><strong>2）渐进式披露（Progressive Disclosure）——Skill 最核心的机制：</strong></p>
+  <ol>
+    <li><strong>第一级：</strong>会话开始时，只有每个 Skill 的 name + description 进入系统提示（约百字级）；</li>
+    <li><strong>第二级：</strong>模型判断某 Skill 与当前任务相关时，才读取完整 SKILL.md 正文；</li>
+    <li><strong>第三级：</strong>SKILL.md 里指向的脚本、参考资料，在真正需要时才加载或直接执行。</li>
+  </ol>
+  <p>这个三层设计是对"上下文稀缺"的直接回应：不相关的知识不占窗口，相关的知识按需展开。</p>
+  <p><strong>3）存放位置决定作用域：</strong></p>
+  <table>
+    <tr><th>级别</th><th>位置</th><th>作用范围</th></tr>
+    <tr><td>用户级</td><td><code>~/.workbuddy/skills/</code>（对应 Claude Code 的 <code>~/.claude/skills/</code>）</td><td>跟随个人账号，跨所有项目可用</td></tr>
+    <tr><td>项目级</td><td>仓库内 <code>.workbuddy/skills/</code>（对应 <code>.claude/skills/</code>）</td><td>随仓库共享，所有打开该仓库的人可用</td></tr>
+  </table>
+  <p>本仓库的 <code>.workbuddy/skills/concept-study-materials/</code> 就是一个项目级 Skill 的实例。</p>
+  <p><strong>4）开放标准：</strong>Agent Skills 已于 2025 年 12 月作为开放标准发布（agentskills.io），同一套 Skill 结构可以在多种 AI 工具间通用——这也是把作业 Skill 放进仓库、而不是只存在某次对话里的意义：它是可迁移、可迭代的资产。</p>
+</section>
+
+<section>
+  <h2><span class="no">PART 5</span>具体应用场景</h2>
+  <div class="scenario">
+    <h3>场景：用本仓库的 concept-study-materials 学一个新概念（如"假设检验"）</h3>
+    <p>这是我个人设计并实际用过的例子。设想下周统计课要学"假设检验"，我在 WorkBuddy 中打开本仓库，直接说："<em>帮我学习假设检验</em>"。</p>
+    <ul>
+      <li>会话启动时，模型案头已经有这个 Skill 的"目录卡片"（name + description），它判断"学习概念"的请求与它匹配；</li>
+      <li>Skill 正文被加载：界定概念 → 联网检索并<em>逐条核实</em>来源 → 按九部分结构撰写 → 套用 assets 里的 HTML 模板 → 自检 → 邀请我核查；</li>
+      <li>产出 <code>learning-materials/hypothesis-testing.html</code>——包含学习目标、我的解释、机制、场景、辨析、边界、自测题和可核查来源；</li>
+      <li>整个过程我不再重复解释"资料要长什么样、来源要怎么核"，因为这些都沉淀在 Skill 里了。</li>
+    </ul>
+    <p>对比没有 Skill 时：每次都要把九部分要求、来源规范、自检清单重新粘贴一遍，还容易漏项。这就是"教一次、永远会"。</p>
+  </div>
+  <p>其他常见场景（简列）：企业把内部规范做成项目级 Skill，全组共享统一的报告格式；个人把"周报怎么写"做成用户级 Skill，在任何项目中调用。</p>
+</section>
+
+<section>
+  <h2><span class="no">PART 6</span>概念辨析</h2>
+  <table>
+    <tr><th>易混淆对象</th><th>关键区别</th><th>一句话判据</th></tr>
+    <tr>
+      <td><strong>Skill vs. 提示词模板</strong></td>
+      <td>模板是被动的文本替换；Skill 可被模型按元数据自主发现、分级加载、还可捆绑脚本与资源</td>
+      <td>模型能不能"自己发现并按需打开"它</td>
+    </tr>
+    <tr>
+      <td><strong>Skill vs. 微调 / 训练</strong></td>
+      <td>Skill 改的是推理时进入上下文的知识，不动模型权重；微调改的是权重，需要数据和算力</td>
+      <td>改提示 or 改模型本身</td>
+    </tr>
+    <tr>
+      <td><strong>Skill vs. 常驻系统提示</strong></td>
+      <td>常驻内容永远占据上下文；Skill 通过渐进式披露，需要时才占用</td>
+      <td>不使用时是否消耗上下文</td>
+    </tr>
+    <tr>
+      <td><strong>Skill vs. MCP / 连接器</strong></td>
+      <td>MCP 给模型接入新的数据源和操作能力（"新手"）；Skill 教模型怎么把事做好（"方法"）</td>
+      <td>提供新工具 or 沉淀做事流程</td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2><span class="no">PART 7</span>使用边界</h2>
+  <p><strong>适合做成 Skill 的情形：</strong>重复出现的多步骤流程（如"生成学习资料""写周报"）；个人或团队的固定约定（文档格式、检查清单）；需要稳定可复用的领域操作规范。</p>
+  <p><strong>不适合 / 需要警惕的情形：</strong></p>
+  <ul>
+    <li>一次性任务——直接在对话里说清楚即可，做 Skill 是过度工程；</li>
+    <li>敏感信息不要写进项目级 Skill——它会随仓库公开（本作业的 .gitignore 就为此排除了密钥类文件）；</li>
+    <li>频繁变化的纯事实数据（如每日行情）——放外部数据源按需查询更好，Skill 适合沉淀"稳定的流程"；</li>
+    <li>description 写得含糊，模型就无法正确判断何时触发——元数据质量决定 Skill 的可用性。</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="no">PART 8</span>自测问题</h2>
+  <p>先自己作答，再展开核对。答不上来就回到对应章节重读。</p>
+  <details>
+    <summary>Q1：Skill 解决的核心问题是什么？</summary>
+    <p>把"怎么做某类任务"的程序性知识从一次性对话中沉淀出来，变成可发现、可复用、可共享的能力单元——"教一次、永远会"。（PART 3）</p>
+  </details>
+  <details>
+    <summary>Q2：渐进式披露分几级？为什么说它是对上下文稀缺的回应？</summary>
+    <p>三级：name+description 常驻 → 相关时加载 SKILL.md 正文 → 捆绑资源按需加载/执行。不相关的知识不占上下文窗口，相关的按需展开，节省稀缺的窗口空间。（PART 4）</p>
+  </details>
+  <details>
+    <summary>Q3：项目级 Skill 和用户级 Skill 分别放在哪？作用范围有何不同？</summary>
+    <p>用户级在 ~/.workbuddy/skills/（跨所有项目跟随个人）；项目级在仓库 .workbuddy/skills/（随仓库共享给所有打开它的人）。（PART 4）</p>
+  </details>
+  <details>
+    <summary>Q4：SKILL.md 的 YAML 元数据里哪一项决定了模型能否正确触发它？</summary>
+    <p>description——模型根据描述判断当前任务是否与该 Skill 相关；写得含糊就会漏触发或误触发。（PART 4、PART 7）</p>
+  </details>
+  <details>
+    <summary>Q5：什么样的任务不值得做成 Skill？</summary>
+    <p>一次性任务（直接对话即可）、包含敏感信息的内容（会随仓库公开）、频繁变化的纯事实数据（应外置为数据源）。（PART 7）</p>
+  </details>
+</section>
+
+<section class="sources">
+  <h2><span class="no">PART 9</span>参考资料</h2>
+  <ol>
+    <li>
+      <strong>Extend Claude with skills</strong>（Claude Code 官方 Skill 文档）
+      <span class="src-meta">Anthropic 官方文档 · <a href="https://code.claude.com/docs/en/skills">https://code.claude.com/docs/en/skills</a> · 支撑 PART 4 的 SKILL.md 结构、用户级/项目级存放位置、agentskills.io 开放标准与"500 行以内"的写作建议</span>
+    </li>
+    <li>
+      <strong>Equipping agents for the real world with Agent Skills</strong>（用 Agent Skills 为智能体配备真实世界能力）
+      <span class="src-meta">Anthropic Engineering Blog · 发布于 2025-10-16（2025-12-18 更新：开放标准发布） · <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills</a> · 支撑 PART 3 的"入职手册"类比与 PART 4 的渐进式披露三级机制、Skill 定义</span>
+    </li>
+    <li>
+      <strong>技能（Skills Market）</strong>（WorkBuddy 官方 Skill 文档）
+      <span class="src-meta">腾讯 WorkBuddy 官方文档 · <a href="https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market">https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market</a> · 支撑 PART 5 的本产品 Skill 调用方式（安装、启用/关闭、自动调用）</span>
+    </li>
+    <li>
+      <strong>concept-study-materials</strong>（本仓库的项目级 Skill 实例）
+      <span class="src-meta">Evsang-0407 · <a href="https://github.com/Evsang-0407/my-learning-workshop/blob/main/.workbuddy/skills/concept-study-materials/SKILL.md">https://github.com/Evsang-0407/my-learning-workshop/blob/main/.workbuddy/skills/concept-study-materials/SKILL.md</a> · PART 5 应用场景所用实例的源文件</span>
+    </li>
+  </ol>
+  <p style="font-size:13px;color:var(--muted);">以上链接均于 2026-09-04 逐一访问核实（第 4 条将在仓库推送后生效），确认内容存在且支撑正文相应论断。</p>
+</section>
+
+<footer>
+  <p>本资料为概念学习资料生成 Skill（concept-study-materials）的第一次实战产物：由 AI 按九部分结构生成初稿，学习者本人负责逐节核查与修订。</p>
+  <p>本资料由 <a href="https://github.com/Evsang-0407/my-learning-workshop">my-learning-workshop</a> 仓库的 concept-study-materials Skill 生成初稿，经学习者本人核查修订。</p>
+</footer>
+
+</body>
+</html>
